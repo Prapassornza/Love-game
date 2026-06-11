@@ -1,691 +1,288 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>💗 1-Month Anniversary: 20 Hearts to Love 💗</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>love-game ❤️</title>
 
-    body {
-      min-height: 100vh;
-      background: linear-gradient(145deg, #fff9f5 0%, #ffe6f0 100%);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-family: 'Quicksand', 'Segoe UI', 'Poppins', system-ui, -apple-system, 'Comic Neue', sans-serif;
-      padding: 1rem;
-      position: relative;
-      overflow-x: hidden;
-    }
+<style>
+:root{
+    --pink:#ffd6e7;
+    --pink-dark:#ff8fb7;
+    --brown:#b88a6a;
+    --cream:#fffaf7;
+    --white:#ffffff;
+}
 
-    /* main game container */
-    .game-container {
-      max-width: 550px;
-      width: 100%;
-      background: rgba(255, 248, 245, 0.85);
-      backdrop-filter: blur(3px);
-      border-radius: 70px 70px 80px 80px;
-      box-shadow: 0 25px 45px rgba(160, 100, 100, 0.2), 0 0 0 1px rgba(255, 215, 200, 0.6);
-      overflow: hidden;
-      transition: all 0.2s ease;
-    }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
 
-    /* header & score */
-    .score-header {
-      background: #fff2ed;
-      padding: 1.2rem 1.5rem;
-      text-align: center;
-      border-bottom: 2px solid #ffcdb5;
-    }
+body{
+    overflow:hidden;
+    background:linear-gradient(135deg,var(--cream),var(--pink));
+    height:100vh;
+}
 
-    .score-header h2 {
-      font-size: 1.8rem;
-      letter-spacing: -0.5px;
-      color: #b85c38;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
+.screen{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:20px;
+}
 
-    .heart-counter {
-      background: #ffffffcc;
-      backdrop-filter: blur(4px);
-      border-radius: 100px;
-      padding: 0.3rem 1rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 700;
-      font-size: 1.9rem;
-      color: #e0916d;
-      box-shadow: inset 0 1px 3px #ffded0, 0 5px 12px rgba(0,0,0,0.02);
-    }
+h1{
+    color:var(--brown);
+    margin-bottom:10px;
+}
 
-    .heart-counter span {
-      font-size: 2rem;
-    }
+p{
+    color:#7b5a46;
+}
 
-    .progress-message {
-      font-size: 1rem;
-      background: #ffebe2;
-      margin-top: 10px;
-      padding: 6px 15px;
-      border-radius: 50px;
-      display: inline-block;
-      color: #af6e4e;
-      font-weight: 600;
-    }
+.btn{
+    margin-top:25px;
+    border:none;
+    padding:14px 28px;
+    border-radius:999px;
+    background:var(--pink-dark);
+    color:white;
+    font-size:1rem;
+    cursor:pointer;
+    transition:.3s;
+}
 
-    /* game grid (playground) */
-    .game-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 18px;
-      padding: 2rem 2rem 2rem 2rem;
-      background: #fffaf7;
-    }
+.btn:hover{
+    transform:scale(1.05);
+}
 
-    /* heart card styling */
-    .heart-card {
-      background: #fff2ee;
-      border-radius: 32px;
-      aspect-ratio: 1 / 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-      box-shadow: 0 10px 15px -8px rgba(110, 50, 30, 0.12);
-      border: 1px solid #ffe1d0;
-      transform: scale(1);
-    }
+.hidden{
+    display:none;
+}
 
-    .heart-card:active {
-      transform: scale(0.94);
-    }
+#game{
+    background:linear-gradient(180deg,#fff,#ffeef5);
+}
 
-    .heart-card:hover {
-      background: #ffe2d4;
-      transform: translateY(-5px);
-    }
+.counter{
+    position:absolute;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    background:white;
+    padding:10px 20px;
+    border-radius:999px;
+    box-shadow:0 4px 15px rgba(0,0,0,.08);
+    color:var(--brown);
+    font-weight:600;
+}
 
-    /* uncollected heart icon */
-    .heart-icon {
-      font-size: 2.7rem;
-      filter: drop-shadow(2px 4px 8px rgba(0,0,0,0.05));
-      transition: all 0.15s ease;
-    }
+.heart{
+    position:absolute;
+    font-size:42px;
+    cursor:pointer;
+    animation:float 2.5s ease-in-out infinite;
+    user-select:none;
+}
 
-    /* collected heart style -> glitched / hidden but with cute checkmark */
-    .heart-card.collected {
-      background: #f8e2d4;
-      cursor: default;
-      box-shadow: inset 0 0 0 2px #ffc9b0;
-      transform: scale(0.96);
-      animation: gentlePop 0.2s ease-out;
-    }
+@keyframes float{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(-12px);}
+}
 
-    .heart-card.collected .heart-icon {
-      filter: grayscale(0.1);
-      opacity: 0.6;
-      content: "✔️";
-      font-size: 2.2rem;
-    }
+.pop{
+    animation:pop .3s forwards;
+}
 
-    /* animation when collected */
-    @keyframes gentlePop {
-      0% { transform: scale(0.9); opacity: 0.6; }
-      80% { transform: scale(1.02); }
-      100% { transform: scale(0.96); }
+@keyframes pop{
+    to{
+        transform:scale(1.8);
+        opacity:0;
     }
+}
 
-    /* floating hearts bg */
-    .floating-bg {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 0;
-    }
+.floating-heart{
+    position:absolute;
+    color:white;
+    opacity:.5;
+    animation:rise linear infinite;
+}
 
-    .float-heart {
-      position: absolute;
-      font-size: 1.4rem;
-      opacity: 0.2;
-      animation: floatSlow 15s infinite linear;
-      user-select: none;
-      color: #e4aa8b;
+@keyframes rise{
+    from{
+        transform:translateY(100vh);
     }
+    to{
+        transform:translateY(-120px);
+    }
+}
 
-    @keyframes floatSlow {
-      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-      20% { opacity: 0.4; }
-      80% { opacity: 0.3; }
-      100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
-    }
+.teddy{
+    font-size:80px;
+    margin-bottom:15px;
+}
 
-    /* special message overlay (popup) */
-    .message-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 240, 235, 0.96);
-      backdrop-filter: blur(12px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      visibility: hidden;
-      opacity: 0;
-      transition: all 0.4s ease;
-      font-family: 'Quicksand', sans-serif;
-    }
+.message-box{
+    max-width:650px;
+    background:white;
+    padding:30px;
+    border-radius:30px;
+    box-shadow:0 10px 30px rgba(0,0,0,.1);
+}
 
-    .message-overlay.show {
-      visibility: visible;
-      opacity: 1;
-    }
+.confetti{
+    position:absolute;
+    font-size:25px;
+    animation:fall 4s linear forwards;
+}
 
-    .anniversary-card {
-      background: white;
-      max-width: 420px;
-      width: 85%;
-      border-radius: 60px;
-      padding: 2rem 1.8rem 2.2rem;
-      text-align: center;
-      box-shadow: 0 40px 55px rgba(130, 70, 40, 0.25);
-      border: 1px solid #ffcfbb;
-      transform: scale(0.9);
-      transition: transform 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
+@keyframes fall{
+    from{
+        transform:translateY(-100px) rotate(0);
     }
-
-    .message-overlay.show .anniversary-card {
-      transform: scale(1);
+    to{
+        transform:translateY(110vh) rotate(720deg);
     }
-
-    .anniversary-card h1 {
-      font-size: 2.7rem;
-      color: #bc6f4b;
-      margin-bottom: 0.5rem;
-      letter-spacing: -0.5px;
-    }
-
-    .anniversary-card .big-heart {
-      font-size: 3.5rem;
-      display: inline-block;
-      animation: bounceHeart 1s infinite alternate;
-    }
-
-    @keyframes bounceHeart {
-      0% { transform: scale(1); }
-      100% { transform: scale(1.2); text-shadow: 0 0 8px #ffbba0; }
-    }
-
-    .message-text {
-      font-size: 1.3rem;
-      color: #6e3e26;
-      line-height: 1.45;
-      margin: 1.2rem 0;
-      font-weight: 600;
-      background: #fff4ef;
-      padding: 1rem;
-      border-radius: 48px;
-    }
-
-    .cute-sticker {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin: 15px 0;
-      font-size: 2rem;
-    }
-
-    .reset-button {
-      background: #ffdbc9;
-      border: none;
-      padding: 12px 28px;
-      border-radius: 50px;
-      font-size: 1rem;
-      font-weight: 700;
-      color: #b45a34;
-      margin-top: 10px;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: inherit;
-    }
-
-    .reset-button:hover {
-      background: #ffcbb2;
-      transform: scale(1.02);
-      color: #8a4a2a;
-    }
-
-    /* win confetti style (using canvas) */
-    #confetti-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 999;
-    }
-
-    /* cute footer */
-    .footer-badge {
-      text-align: center;
-      padding: 0.9rem;
-      font-size: 0.75rem;
-      background: #fff4ef;
-      color: #c48664;
-      border-top: 1px solid #ffdfcf;
-      font-weight: 500;
-    }
-
-    @media (max-width: 480px) {
-      .game-grid {
-        gap: 12px;
-        padding: 1.5rem;
-      }
-      .heart-icon {
-        font-size: 2rem;
-      }
-      .score-header h2 {
-        font-size: 1.3rem;
-      }
-    }
-
-    /* Gen Z touches */
-    .slay-text {
-      background: linear-gradient(135deg, #df9a77, #bc6a48);
-      background-clip: text;
-      -webkit-background-clip: text;
-      color: transparent;
-      font-weight: 800;
-    }
-
-    button, .heart-card {
-      transition: all 0.2s ease;
-    }
-  </style>
+}
+</style>
 </head>
+
 <body>
-<div class="floating-bg" id="floatingHearts"></div>
-<div class="game-container">
-  <div class="score-header">
-    <h2>✨ 1 month of us ✨ <br> <span class="slay-text">collect 20 hearts</span></h2>
-    <div class="heart-counter">
-      <span>❤️</span> <span id="scoreValue">0</span> <span>/ 20</span>
-    </div>
-    <div class="progress-message" id="progressMsg">tap hearts to collect 💕</div>
-  </div>
 
-  <div class="game-grid" id="heartsGrid"></div>
-  <div class="footer-badge">
-    🌸 every heart = more luv 🌸
-  </div>
+<div id="start" class="screen">
+    <div class="teddy">🧸💖</div>
+    <h1>Happy 1 Month Anniversary</h1>
+    <p>
+        A tiny game made with lots of love.<br>
+        Collect 20 hearts to unlock a special surprise.
+    </p>
+    <button class="btn" onclick="startGame()">Start Game ❤️</button>
 </div>
 
-<!-- Anniversary reveal overlay -->
-<div id="anniversaryOverlay" class="message-overlay">
-  <div class="anniversary-card">
-    <div class="big-heart">💗💗💗</div>
-    <h1>HAPPY 1-MONTH <br> ANNIVERSARY!</h1>
-    <div class="message-text">
-      🧸 you collected all 20 hearts! 🧸<br>
-      one month with you = pure magic. <br>
-      here's to infinite hearts together 💖<br>
-      ily + ur the cutest ♡
+<div id="game" class="screen hidden">
+    <div class="counter">
+        Hearts Collected:
+        <span id="count">0</span>/20 ❤️
     </div>
-    <div class="cute-sticker">
-      <span>🐻‍❄️</span> <span>🍰</span> <span>🎀</span> <span>💌</span>
-    </div>
-    <button class="reset-button" id="playAgainBtn">🌸 play again? 🌸</button>
-  </div>
 </div>
 
-<canvas id="confetti-canvas"></canvas>
+<div id="end" class="screen hidden">
+    <div class="message-box">
+        <div style="font-size:70px;">💌</div>
+        <h1>Happy 1 Month Anniversary</h1>
+
+        <p style="margin-top:15px;line-height:1.8;">
+            Thank you for being the reason behind my smile every single day.
+            <br><br>
+            Thank you for coming into my life and making it brighter.
+            <br><br>
+            I love you so much ❤️
+            <br><br>
+            Here's to many more memories, laughs,
+            cuddles, and adventures together.
+        </p>
+
+        <button class="btn" onclick="extraLove()">
+            One More Kiss 💋
+        </button>
+    </div>
+</div>
 
 <script>
-  // Game state
-  let totalHearts = 20;
-  let collectedCount = 0;
-  let heartsCollectedFlags = new Array(totalHearts).fill(false);
-  let gameActive = true;     // becomes false when anniversary message shown
-  let animationFrame = null;
-  let confettiActive = false;
+let score = 0;
+const goal = 20;
 
-  // DOM elements
-  const gridContainer = document.getElementById('heartsGrid');
-  const scoreSpan = document.getElementById('scoreValue');
-  const progressMsgDiv = document.getElementById('progressMsg');
-  const overlay = document.getElementById('anniversaryOverlay');
-  const playAgainBtn = document.getElementById('playAgainBtn');
+function startGame(){
+    document.getElementById('start').classList.add('hidden');
+    document.getElementById('game').classList.remove('hidden');
 
-  // --- Helper functions ---
-  function updateUI() {
-    scoreSpan.innerText = collectedCount;
-    if (collectedCount === totalHearts) {
-      if (gameActive === true) {
-        unlockAnniversaryMessage();
-      }
-      progressMsgDiv.innerText = '✨ all hearts collected! unlocking surprise... ✨';
-    } else {
-      let remaining = totalHearts - collectedCount;
-      progressMsgDiv.innerHTML = `💖 ${remaining} more heart${remaining !== 1 ? 's' : ''} to go! keep collecting 💖`;
+    createBackgroundHearts();
+
+    for(let i=0;i<5;i++){
+        spawnHeart();
     }
-  }
+}
 
-  // confetti effect (light & cute)
-  function startConfetti() {
-    const canvas = document.getElementById('confetti-canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+function spawnHeart(){
+    const heart=document.createElement('div');
+    heart.className='heart';
+    heart.innerHTML='💖';
 
-    let particles = [];
-    const colors = ['#ffb7b2', '#ff9a8b', '#fbc4ab', '#e9a28c', '#f7c6b6', '#ffded5'];
-    const particleCount = 120;
+    const game=document.getElementById('game');
 
-    for (let i = 0; i < particleCount; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height - canvas.height,
-        size: Math.random() * 8 + 4,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        speedY: Math.random() * 5 + 3,
-        speedX: (Math.random() - 0.5) * 2.2,
-        rotation: Math.random() * 360,
-        spin: (Math.random() - 0.5) * 8,
-        shape: Math.random() > 0.7 ? 'heart' : 'circle'
-      });
-    }
+    heart.style.left=Math.random()*85+'vw';
+    heart.style.top=(10+Math.random()*75)+'vh';
 
-    let animating = true;
-    function drawConfetti() {
-      if (!animating) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      let stillActive = false;
-      for (let p of particles) {
-        if (p.y < canvas.height + 50) stillActive = true;
-        p.y += p.speedY;
-        p.x += p.speedX;
-        p.rotation += p.spin;
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.rotation * Math.PI / 180);
-        if (p.shape === 'heart') {
-          ctx.font = `${p.size + 6}px "Segoe UI Emoji"`;
-          ctx.fillStyle = p.color;
-          ctx.fillText('❤️', -p.size/2, -p.size/2);
-        } else {
-          ctx.beginPath();
-          ctx.arc(0, 0, p.size/2, 0, Math.PI * 2);
-          ctx.fillStyle = p.color;
-          ctx.fill();
-          ctx.shadowBlur = 0;
+    heart.onclick=()=>{
+        score++;
+        document.getElementById('count').textContent=score;
+
+        heart.classList.add('pop');
+
+        setTimeout(()=>{
+            heart.remove();
+        },250);
+
+        if(score>=goal){
+            finishGame();
+        }else{
+            spawnHeart();
         }
-        ctx.restore();
-        if (p.y > canvas.height + 40) {
-          p.y = -30;
-          p.x = Math.random() * canvas.width;
-        }
-      }
-      if (stillActive || particles.some(p => p.y < canvas.height + 100)) {
-        requestAnimationFrame(drawConfetti);
-      } else {
-        animating = false;
-      }
+    };
+
+    game.appendChild(heart);
+}
+
+function finishGame(){
+    document.getElementById('game').classList.add('hidden');
+    document.getElementById('end').classList.remove('hidden');
+
+    for(let i=0;i<60;i++){
+        createConfetti();
     }
-    drawConfetti();
-    setTimeout(() => { animating = false; }, 4500);
-  }
+}
 
-  // Unlock anniversary message + floating hearts and confetti
-  function unlockAnniversaryMessage() {
-    if (!gameActive) return;
-    gameActive = false;
-    updateUI();
+function createBackgroundHearts(){
+    for(let i=0;i<20;i++){
+        const h=document.createElement('div');
+        h.className='floating-heart';
+        h.innerHTML='🤍';
 
-    // stop any future clicks on hearts
-    const allCards = document.querySelectorAll('.heart-card');
-    allCards.forEach(card => {
-      card.style.pointerEvents = 'none';
-    });
+        h.style.left=Math.random()*100+'vw';
+        h.style.animationDuration=(6+Math.random()*8)+'s';
+        h.style.fontSize=(15+Math.random()*25)+'px';
 
-    startConfetti();
-
-    // also generate extra popup hearts animation
-    for (let i = 0; i < 30; i++) {
-      setTimeout(() => {
-        createFloatingHeartBurst();
-      }, i * 60);
+        document.body.appendChild(h);
     }
+}
 
-    // show the romantic overlay after slight delay for dramatic effect
-    setTimeout(() => {
-      overlay.classList.add('show');
-    }, 400);
-  }
+function createConfetti(){
+    const c=document.createElement('div');
+    c.className='confetti';
 
-  function createFloatingHeartBurst() {
-    const burstContainer = document.body;
-    const heartSpan = document.createElement('div');
-    heartSpan.innerHTML = ['❤️', '💖', '💗', '💘', '💕', '💓', '🧸', '🌸'][Math.floor(Math.random() * 8)];
-    heartSpan.style.position = 'fixed';
-    heartSpan.style.left = Math.random() * 100 + '%';
-    heartSpan.style.bottom = '-20px';
-    heartSpan.style.fontSize = (Math.random() * 22 + 20) + 'px';
-    heartSpan.style.pointerEvents = 'none';
-    heartSpan.style.zIndex = '1001';
-    heartSpan.style.opacity = '0.9';
-    heartSpan.style.animation = 'floatSlow 2.5s ease-out forwards';
-    heartSpan.style.filter = 'drop-shadow(0 4px 6px #ffb78c)';
-    burstContainer.appendChild(heartSpan);
-    setTimeout(() => heartSpan.remove(), 2500);
-  }
+    const items=['💖','🤍','🩷','✨','🌷'];
+    c.innerHTML=items[Math.floor(Math.random()*items.length)];
 
-  // collect heart logic
-  function collectHeart(index) {
-    if (!gameActive) return;
-    if (heartsCollectedFlags[index]) return;
-    // mark collected
-    heartsCollectedFlags[index] = true;
-    collectedCount++;
-    
-    // update UI & card style
-    const cards = document.querySelectorAll('.heart-card');
-    if (cards[index]) {
-      cards[index].classList.add('collected');
-      // change inner heart icon to checkmark + soft stamp
-      const iconSpan = cards[index].querySelector('.heart-icon');
-      if (iconSpan) {
-        iconSpan.innerHTML = '✅';  // cute check
-        iconSpan.style.fontSize = '2.2rem';
-      }
-    }
+    c.style.left=Math.random()*100+'vw';
 
-    // play little haptic + show floating +1 heart
-    showPlusOneEffect(index);
-    updateUI();
+    document.body.appendChild(c);
 
-    // additional cute animation: create temporary floating heart from clicked position
-    if (collectedCount === totalHearts) {
-      // final unlocking triggered inside updateUI -> unlockAnniversaryMessage called
-    }
-  }
+    setTimeout(()=>{
+        c.remove();
+    },4000);
+}
 
-  function showPlusOneEffect(cardIndex) {
-    const cards = document.querySelectorAll('.heart-card');
-    if (!cards[cardIndex]) return;
-    const rect = cards[cardIndex].getBoundingClientRect();
-    const floatEl = document.createElement('div');
-    floatEl.innerText = '❤️ +1';
-    floatEl.style.position = 'fixed';
-    floatEl.style.left = rect.left + rect.width/2 - 20 + 'px';
-    floatEl.style.top = rect.top - 15 + 'px';
-    floatEl.style.fontSize = '1.6rem';
-    floatEl.style.fontWeight = 'bold';
-    floatEl.style.color = '#e27c5c';
-    floatEl.style.pointerEvents = 'none';
-    floatEl.style.zIndex = '1000';
-    floatEl.style.textShadow = '0 2px 8px #ffd0be';
-    floatEl.style.animation = 'floatUpFade 0.8s forwards';
-    document.body.appendChild(floatEl);
-    setTimeout(() => floatEl.remove(), 800);
-  }
-
-  // Inject keyframe for plus one
-  const styleSheet = document.createElement("style");
-  styleSheet.textContent = `
-    @keyframes floatUpFade {
-      0% { opacity: 1; transform: translateY(0px) scale(0.9); }
-      70% { opacity: 0.8; }
-      100% { opacity: 0; transform: translateY(-55px) scale(1.2); }
-    }
-  `;
-  document.head.appendChild(styleSheet);
-
-  // create the initial heart grid (20 hearts)
-  function buildGrid() {
-    gridContainer.innerHTML = '';
-    for (let i = 0; i < totalHearts; i++) {
-      const card = document.createElement('div');
-      card.className = `heart-card ${heartsCollectedFlags[i] ? 'collected' : ''}`;
-      const heartIcon = document.createElement('div');
-      heartIcon.className = 'heart-icon';
-      if (heartsCollectedFlags[i]) {
-        heartIcon.innerHTML = '✅';
-        heartIcon.style.fontSize = '2.2rem';
-      } else {
-        heartIcon.innerHTML = '❤️';
-        heartIcon.style.fontSize = '2.8rem';
-      }
-      card.appendChild(heartIcon);
-      card.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (!gameActive) return;
-        if (heartsCollectedFlags[i]) return;
-        collectHeart(i);
-      });
-      gridContainer.appendChild(card);
-    }
-  }
-
-  // reset game fully
-  function resetGame() {
-    // reset state
-    collectedCount = 0;
-    heartsCollectedFlags = new Array(totalHearts).fill(false);
-    gameActive = true;
-    overlay.classList.remove('show');
-
-    // remove any leftover confetti canvas animation? no, just rebuild fresh
-    // but we clear canvas quickly
-    const canvas = document.getElementById('confetti-canvas');
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // rebuild grid with new style
-    buildGrid();
-    updateUI();
-
-    // re-enable pointer events on all cards
-    const allCards = document.querySelectorAll('.heart-card');
-    allCards.forEach(card => {
-      card.style.pointerEvents = 'auto';
-    });
-    
-    // reset progress message
-    progressMsgDiv.innerHTML = '💖 new game! collect 20 hearts 💖';
-  }
-
-  // generate random floating background hearts (cute bg)
-  function generateBackgroundFloatingHearts() {
-    const container = document.getElementById('floatingHearts');
-    container.innerHTML = '';
-    for (let i = 0; i < 24; i++) {
-      const heart = document.createElement('div');
-      heart.classList.add('float-heart');
-      heart.innerHTML = ['❤️', '💗', '💖', '🌸', '🍰', '🐻', '💌'][Math.floor(Math.random() * 7)];
-      const size = Math.random() * 20 + 18;
-      heart.style.fontSize = size + 'px';
-      heart.style.left = Math.random() * 100 + '%';
-      heart.style.animationDuration = Math.random() * 14 + 8 + 's';
-      heart.style.animationDelay = Math.random() * 12 + 's';
-      heart.style.opacity = Math.random() * 0.3 + 0.1;
-      container.appendChild(heart);
-    }
-  }
-
-  // also create interactive mouse/cursor cute sparkle? optional: add very subtle hover effect
-  function addCuteSparklesOnClick() {
-    document.body.addEventListener('click', (e) => {
-      if (!gameActive && e.target.closest('.heart-card') === null) return;
-      if (e.target.closest('.heart-card')) return; // let the heart effect handle separately
-      // but for extra gen z vibe: occasional random floating emoji
-      if (Math.random() > 0.75) {
-        const spark = document.createElement('div');
-        spark.innerHTML = '✨';
-        spark.style.position = 'fixed';
-        spark.style.left = e.clientX - 12 + 'px';
-        spark.style.top = e.clientY - 12 + 'px';
-        spark.style.fontSize = '1.4rem';
-        spark.style.pointerEvents = 'none';
-        spark.style.zIndex = '999';
-        spark.style.animation = 'floatUpFade 0.7s forwards';
-        document.body.appendChild(spark);
-        setTimeout(() => spark.remove(), 700);
-      }
-    });
-  }
-
-  // reset game via button and ensure fresh start + close overlay
-  playAgainBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    resetGame();
-  });
-
-  // close overlay if someone clicks outside? optional but we keep reset button anyway
-  overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) {
-      resetGame();
-    }
-  });
-
-  // init floating hearts background
-  generateBackgroundFloatingHearts();
-  buildGrid();
-  updateUI();
-  addCuteSparklesOnClick();
-
-  // window resize to keep confetti canvas correct
-  window.addEventListener('resize', () => {
-    const canvas = document.getElementById('confetti-canvas');
-    if (canvas) {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-  });
-  
-  // special romantic phrase prefetch: if someone collects all hearts we trigger celebration
-  // Also handle extra animations while collecting
-  // add some soft audio? not needed, but text based adorable.
-  console.log("💗 happy 1-month anniversary game ready! 💗");
+function extraLove(){
+    alert("Forever my favorite person ❤️");
+}
 </script>
+
 </body>
 </html>
-
